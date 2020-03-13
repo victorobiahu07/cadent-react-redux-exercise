@@ -3,31 +3,23 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
-//including deselectItem, removeItem, selectItem to imports
 
-import {  addItem,
-          deselectItem,
-          removeItem,
-          selectItem} from "../ducks/groceries";
-
+//including removeItem, selectItem, deselectItem
+import {
+  addItem,
+  removeItem,
+  selectItem,
+  deselectItem
+} from "../ducks/groceries";
 
 import ListInputs from "./ListInputs";
 import ListSelection from "./ListSelection";
 import ListTable from "./ListTable";
 
 
-//updating this
-
-/*const mapStateToProps = ({ groceries: { list: groceryList } }) => ({
-  groceryList
-});*/
-
+//ensuring the groceryList has content and mapping states to Props
 const mapStateToProps = ({
-  groceries: {
-    list: groceryList,
-    isItemSelected,
-    selectedItem
-  },
+  groceries: { list: groceryList, isItemSelected, selectedItem }
 }) => ({
   groceryList,
   isItemSelected,
@@ -37,8 +29,7 @@ const mapStateToProps = ({
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
-      addItem, 
-      //updating the other actions as well
+      addItem,
       removeItem,
       selectItem,
       deselectItem
@@ -46,7 +37,8 @@ const mapDispatchToProps = dispatch =>
     dispatch
   );
 
-//had to change to UNSAFE_ will mount to comply with React 17x
+
+//including this so it complies with React 17x  
 class ListContainer extends Component {
   UNSAFE_componentWillMount() {
     /* eslint-disable no-console */
@@ -57,7 +49,6 @@ class ListContainer extends Component {
     console.log("groceryList", nextProps.groceryList, this);
   }
 
-  //editing list selection and list table as well
   render() {
     return (
       <section className="groceryApp">
@@ -66,13 +57,17 @@ class ListContainer extends Component {
         </div>
         <div className="types">
           <ListSelection
+          //included this
             isItemSelected={this.props.isItemSelected}
             selectedItem={this.props.selectedItem}
           />
           <ListTable
-            groceries={this.props.groceryList}
+          //included this
+            groceryList={this.props.groceryList}
             removeItem={this.props.removeItem}
             selectItem={this.props.selectItem}
+            isItemSelected={this.props.isItemSelected}
+            selectedItem={this.props.selectedItem}
             deselectItem={this.props.deselectItem}
           />
         </div>
@@ -82,20 +77,27 @@ class ListContainer extends Component {
 }
 
 ListContainer.propTypes = {
-  // Props ....including props over here
+  // Props
+  isItemSelected: PropTypes.bool.isRequired,
+  selectedItem: PropTypes.shape({
+    id: PropTypes.number,
+    name: PropTypes.string,
+    category: PropTypes.string,
+    deliveryMethod: PropTypes.string
+  }).isRequired,
   // Actions
   addItem: PropTypes.func.isRequired,
+  //included these
   removeItem: PropTypes.func.isRequired,
   selectItem: PropTypes.func.isRequired,
   deselectItem: PropTypes.func.isRequired,
   // Store
-  groceryList: PropTypes.array.isRequired,
-  listSelection: PropTypes.array.isRequired
+  groceryList: PropTypes.array.isRequired
   // Other
 };
 
 const ListContainerRedux = connect(
-  mapStateToProps,
+  mapStateToProps, 
   mapDispatchToProps
 )(ListContainer);
 
